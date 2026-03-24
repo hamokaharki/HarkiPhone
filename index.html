@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ku">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harki Phone - هەرکی فۆن</title>
+    <style>
+        :root { --gold: #f1c40f; --dark: #000; --card: #0d0d0d; --red: #ff4757; --purple: #a29bfe; --green: #2ecc71; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--dark); color: white; padding: 20px; }
+        
+        .led-header {
+            position: relative; background: var(--card); border-radius: 20px;
+            padding: 25px; text-align: center; overflow: hidden; margin-bottom: 25px;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+        .led-header::before {
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--gold));
+            animation: rotate-led 6s linear infinite; z-index: 0;
+        }
+        .led-header::after { content: ""; position: absolute; inset: 3px; background: var(--card); border-radius: 18px; z-index: 1; }
+        .moving-title { position: relative; z-index: 2; margin: 0; font-size: 45px; color: var(--gold); text-shadow: 0 0 15px rgba(241, 196, 15, 0.5); animation: float-text 3s ease-in-out infinite; font-weight: bold; }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section { background: var(--card); border: 1px solid #1a1a1a; border-radius: 18px; padding: 20px; border-top: 4px solid var(--gold); }
+        h2 { font-size: 18px; color: var(--gold); margin-bottom: 15px; }
+
+        input, select { width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; border: 1px solid #222; background: #000; color: white; font-size: 16px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--gold); }
+
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; transition: 0.2s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-gold { background: var(--gold); color: black; }
+        .btn-purple { background: var(--purple); color: black; }
+        .btn-green { background: var(--green); color: black; }
+
+        .list-box { background: #050505; border-radius: 12px; padding: 5px; margin-top: 15px; border: 1px solid #111; min-height: 100px; }
+        .item-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #111; font-size: 15px; align-items: center; }
+        .debt-row { color: #ff8080 !important; font-weight: bold; }
+        .del-btn { background: #2a0000; color: #ff4757; border: 1px solid #ff4757; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+
+        .total-small { font-size: 26px; color: var(--gold); text-align: center; margin-top: 20px; font-weight: bold; border-top: 1px solid #222; padding-top: 15px; }
+
+        @keyframes rotate-led { 100% { transform: rotate(360deg); } }
+        @keyframes float-text { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    </style>
+</head>
+<body onload="loadAllData()">
+
+    <div class="led-header">
+        <h1 class="moving-title">HARKI PHONE</h1>
+        <div style="position:relative; z-index:2; color:#aaa; font-size: 14px;">سیستەمی کارگێڕی هەرکی فۆن</div>
+    </div>
+
+    <div class="main-container">
+        <div class="section">
+            <h2>🛠️ چاککردنەوە و ئێکسسوارات</h2>
+            <select id="s1">
+                <option>📱 چاککردنی شاشە</option>
+                <option>🔌 شوێن شەحن</option>
+                <option>🛡️ درح و بەرگ</option>
+                <option>⚡ شەحن و کێبڵ</option>
+                <option>⚙️ سۆفتوێر</option>
+            </select>
+            <input type="number" id="p1" placeholder="نرخ بنووسە...">
+            <button class="btn btn-gold" onclick="saveData('s1','p1','work_data')">+ زیادکردن بۆ لیست</button>
+            <div class="list-box" id="l1"></div>
+            <div class="total-small" id="t1">کۆ: 0 IQD</div>
+        </div>
+
+        <div class="section" style="border-color: var(--purple);">
+            <h2 style="color: var(--purple);">💳 کارتەکان و یوسی</h2>
+            <select id="s2">
+                <option>کارتی ئاسیا</option><option>کارتی کۆڕەک</option><option>کارتی زەین</option><option>فاست لینک</option><option>نەورۆز</option><option>یوسی پۆبجی</option><option>ئایتوونس</option>
+            </select>
+            <input type="number" id="p2" placeholder="نرخ بنووسە...">
+            <button class="btn btn-purple" onclick="saveData('s2','p2','card_data')">+ زیادکردنی کارت</button>
+            <div class="list-box" id="l2"></div>
+            <div class="total-small" id="t2" style="color:var(--purple)">کۆ: 0 IQD</div>
+        </div>
+
+        <div class="section" style="border-color: var(--green);">
+            <h2 style="color: var(--green);">💡 پارەی کارەبا</h2>
+            <select id="s3">
+                <option>کارەبای ماڵان</option><option>کارەبای دووکان</option>
+            </select>
+            <input type="number" id="p3" placeholder="بڕی پارە...">
+            <button class="btn btn-green" onclick="saveData('s3','p3','elec_data')">+ تۆمارکردنی کارەبا</button>
+            <div class="list-box" id="l3"></div>
+            <div class="total-small" id="t3" style="color:var(--green)">کۆ: 0 IQD</div>
+        </div>
+
+        <div class="section" style="border-color: var(--red);">
+            <h2 style="color: var(--red);">🚩 قەردارەکان (هەمیشە سوور)</h2>
+            <input type="text" id="dn" placeholder="ناوی قەردار...">
+            <input type="number" id="dp" placeholder="بڕی قەرز...">
+            <button class="btn" style="background:var(--red); color:white;" onclick="saveDebt()">⚠️ تۆمارکردنی قەرز</button>
+            <div class="list-box" id="dl"></div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin: 50px 0;">
+        <button class="btn" style="background: #222; color: #888; width: auto; padding: 15px 50px;" onclick="clearDaily()">🗑️ سفرکردنەوەی ڕۆژ (قەرز نامێنێتەوە)</button>
+    </div>
+
+    <script>
+        function saveData(selectId, priceId, storageKey) {
+            const selectEl = document.getElementById(selectId);
+            const priceEl = document.getElementById(priceId);
+            const name = selectEl.value;
+            const price = priceEl.value;
+            
+            if(!price || price <= 0) return;
+
+            let data = JSON.parse(localStorage.getItem(storageKey) || "[]");
+            data.push({ name: name, price: parseInt(price) });
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            
+            priceEl.value = '';
+            loadAllData();
+        }
+
+        function saveDebt() {
+            const nameEl = document.getElementById('dn');
+            const priceEl = document.getElementById('dp');
+            const name = nameEl.value;
+            const price = priceEl.value;
+            
+            if(!name || !price) return;
+
+            let data = JSON.parse(localStorage.getItem("debt_data") || "[]");
+            data.push({ name: name, price: parseInt(price) });
+            localStorage.setItem("debt_data", JSON.stringify(data));
+            
+            nameEl.value = '';
+            priceEl.value = '';
+            loadAllData();
+        }
+
+        function loadAllData() {
+            renderList('work_data', 'l1', 't1', '✅');
+            renderList('card_data', 'l2', 't2', '💳');
+            renderList('elec_data', 'l3', 't3', '💡');
+            renderDebt();
+        }
+
+        function renderList(key, listId, totalId, icon) {
+            const data = JSON.parse(localStorage.getItem(key) || "[]");
+            const listDiv = document.getElementById(listId);
+            let total = 0;
+            listDiv.innerHTML = "";
+
+            data.forEach((item) => {
+                total += item.price;
+                listDiv.innerHTML += `
+                    <div class="item-row">
+                        <span>${icon} ${item.name}</span>
+                        <span>${item.price.toLocaleString()} IQD</span>
+                    </div>`;
+            });
+            document.getElementById(totalId).innerText = "کۆ: " + total.toLocaleString() + " IQD";
+        }
+
+        function renderDebt() {
+            const data = JSON.parse(localStorage.getItem("debt_data") || "[]");
+            const listDiv = document.getElementById('dl');
+            listDiv.innerHTML = "";
+
+            data.forEach((item, index) => {
+                listDiv.innerHTML += `
+                    <div class="item-row debt-row">
+                        <span>👤 ${item.name}: ${item.price.toLocaleString()} IQD</span>
+                        <button class="del-btn" onclick="deleteDebt(${index})">🗑️ سڕینەوە</button>
+                    </div>`;
+            });
+        }
+
+        function deleteDebt(index) {
+            let data = JSON.parse(localStorage.getItem("debt_data") || "[]");
+            data.splice(index, 1);
+            localStorage.setItem("debt_data", JSON.stringify(data));
+            loadAllData();
+        }
+
+        function clearDaily() {
+            if(confirm("فرۆشتنەکانی ئەمڕۆ سفر دەکەیتەوە؟")) {
+                localStorage.removeItem("work_data");
+                localStorage.removeItem("card_data");
+                localStorage.removeItem("elec_data");
+                loadAllData();
+            }
+        }
+    </script>
+</body>
+</html>
